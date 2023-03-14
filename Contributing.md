@@ -208,6 +208,7 @@ Summary:
     // code
   } while (false);
   ```
+A
 
 ## <a name="cpp-code-functions"></a>Functions
 - If a function parameter is a pointer or reference and its value or data isn't intended to be changed, please mark that parameter as `const`.
