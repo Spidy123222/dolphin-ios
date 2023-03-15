@@ -32,3 +32,8 @@ jobs:
           xcodebuild -configuration "Release (Non-Jailbroken)" -scheme "DiOS (NJB)" ${{ env.XCODE_COMMON_BUILD_ARGS }}
           xcodebuild -configuration "Release (TrollStore)" -scheme "DiOS (JB)" ${{ env.XCODE_COMMON_BUILD_ARGS }}
           xcodebuild -configuration "Release (Jailbroken)" -scheme "DiOS (JB)" ${{ env.XCODE_COMMON_BUILD_ARGS }}
+
+      - uses: actions/upload-artifact@v3
+        with:
+          name: Build Artifacts
+          path: ${{ github.workspace }}/products/*
