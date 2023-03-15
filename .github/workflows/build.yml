@@ -27,17 +27,21 @@ jobs:
           brew install cmake ninja bartycrouch
           /usr/bin/python3 -m pip install polib
 
-      - name: Build Application
-        run: |
-          xcodebuild -configuration "Release (Non-Jailbroken)" -scheme "DiOS (NJB)" ${{ env.XCODE_COMMON_BUILD_ARGS }}
-          xcodebuild -configuration "Release (TrollStore)" -scheme "DiOS (JB)" ${{ env.XCODE_COMMON_BUILD_ARGS }}
-          xcodebuild -configuration "Release (Jailbroken)" -scheme "DiOS (JB)" ${{ env.XCODE_COMMON_BUILD_ARGS }}
-
-      - name: Build IPA Files
+      - name: Build Application (NJB)
         run: |
           mkdir "${{ github.workspace }}/products"
+          xcodebuild -configuration "Release (Non-Jailbroken)" -scheme "DiOS (NJB)" ${{ env.XCODE_COMMON_BUILD_ARGS }}
           "${{ github.workspace }}/Source/iOS/App/Project/Scripts/CreateIpa.sh" "${{ github.workspace }}/build-Xcode/Build/Products/${{ env.XCODE_CONFIGURATION_NJB }}-iphoneos/DolphiniOS.app" "OatmealDome Software" "${{ github.workspace }}/Source/iOS/App/Project/Entitlements/Public.entitlements" "${{ github.workspace }}/products/Non-Jailbroken.ipa"
+
+      - name: Build Application (TrollStore)
+        run: |
+          xcodebuild -configuration "Release (TrollStore)" -scheme "DiOS (JB)" ${{ env.XCODE_COMMON_BUILD_ARGS }}
           "${{ github.workspace }}/Source/iOS/App/Project/Scripts/CreateIpa.sh" "${{ github.workspace }}/build-Xcode/Build/Products/${{ env.XCODE_CONFIGURATION_TS }}-iphoneos/DolphiniOS.app" "OatmealDome Software" "${{ github.workspace }}/Source/iOS/App/Project/Entitlements/Private.entitlements" "${{ github.workspace }}/products/TrollStore.tipa"
+
+      - name: Build Application (DEB)
+        run: |
+          xcodebuild -configuration "Release (Jailbroken)" -scheme "DiOS (JB)" ${{ env.XCODE_COMMON_BUILD_ARGS }}         
+          "${{ github.workspace }}/Source/iOS/App/Project/Scripts/CreateDeb.sh" "${{ github.workspace }}/build-Xcode/Build/Products/${{ env.XCODE_CONFIGURATION_JB }}-iphoneos/DolphiniOS.app" "OatmealDome Software" "${{ github.workspace }}/Source/iOS/App/Project/Entitlements/Private.entitlements" "${{ github.workspace }}/Source/iOS/App/Project/Package/Deb/${{ env.DEB_CONTROL_NAME }}.in" "${{ github.workspace }}/Source/iOS/App/Project/Package/Deb/postinst.sh" "${{ github.workspace }}/Source/iOS/App/Project/Package/Deb/postrm.sh" "${{ github.workspace }}/products/Jailbroken.deb"
 
       - uses: actions/upload-artifact@v3
         with:
